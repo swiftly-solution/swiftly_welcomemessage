@@ -1,17 +1,17 @@
 local messages = {}
 
-events:on("OnPluginLoad", function()
+events:on("OnPluginStart", function()
     for i=1,config:FetchArraySize("welcomemessage.messages") do
         local message = config:Fetch("welcomemessage.messages["..(i-1).."]")
         table.insert(messages, message)
     end
 end)
 
-events:on("OnPlayerSpawn", function(playerid)
+events:on("OnPlayerTeam", function(playerid, team, oldteam, disconnect, silent, isbot)
     local player = GetPlayer(playerid)
     if not player then return end
-
-    if player:IsFirstSpawn() == 1 then
+        
+    if oldteam == TEAM_NONE then
         for i=1,#messages do 
             local msg = messages[i]
             msg = msg:gsub("{PLAYERNAME}", player:GetName()):gsub("{PLAYERS}", tostring(playermanager:GetPlayerCount())):gsub("{MAXPLAYERS}", tostring(playermanager:GetPlayerCap())):gsub("{MAP}", server:GetMap())
